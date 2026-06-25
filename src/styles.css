@@ -1,0 +1,55 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: #123885;
+}
+
+
+#app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #030f1b; /* Dark Blue */
+    color: #ffffff;
+    padding: 25px 30px;
+}
+
+#app-header h1 {
+    font-size: 27px;
+    letter-spacing: 0.5px;
+}
+
+
+.header-controls {
+    display: flex;
+    gap: 13px; 
+    align-items: center;
+}
+
+
+#workspace-selector {
+    padding: 7px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+#add-workspace-btn {
+    background-color: #4677c5; /* Lighter bright blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+#add-workspace-btn:hover {
+    background-color: #2563eb; 
+}
