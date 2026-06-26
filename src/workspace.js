@@ -3,6 +3,7 @@ export default class Workspace {
     constructor(title, projects = []) {
         this.title = title;
         this.projects = projects;
+        this.id = crypto.randomUUID();
     }
 
     addProject(project) {
