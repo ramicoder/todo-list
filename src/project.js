@@ -25,8 +25,7 @@ export default class Project {
     }
 }
 
-export const projectLoader = () => {
 
-    const content = document.getElementById("content");
-    content.innerHTML = ``
+export const projectLoader = (projects) => {
+    
 }

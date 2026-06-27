@@ -41,7 +41,7 @@ body {
     font-size: 14px;
 }
 
-#add-workspace-btn {
+button {
     background-color: #4677c5; 
     color: white;
     border: none;
@@ -50,7 +50,7 @@ body {
     font-weight: 600;
 }
 
-#add-workspace-btn:hover {
+button:hover {
     background-color: #2563eb; 
 }
 
@@ -62,20 +62,9 @@ body {
     flex-direction: column;
 }
 
-#add-project-btn {
-    background-color: #4677c5; 
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-weight: 600;
-    margin: 30px;
+#add-project-btn, #rm-ws-btn, #edit-ws-btn {
+    margin: 15px;
 }
-
-#add-project-btn:hover {
-    background-color: #2563eb; 
-}
-
 
 .modal {
     position: fixed;

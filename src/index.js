@@ -5,8 +5,12 @@ import Workspace from "./workspace.js";
 import { saveData, loadData } from "./storage.js";
 
 const rawData = loadData();
+const sidebar = document.getElementById("sidebar");
 const content = document.querySelector("#content");
-//localStorage.clear()
+const select = document.getElementById("workspace-selector");
+const appTitle = document.getElementById("title");
+let activeWs;
+
 let workspaces = rawData.map(data => {
 
     const ws = new Workspace(data.title);
@@ -36,6 +40,8 @@ let workspaces = rawData.map(data => {
     return ws;
 });
 
+updateWorkspaceDropdown();
+
 function createWorkspace(title, projects = []) {
     if (workspaces.length >= 2) {
         console.log("To have more than 2 workspaces, please proceed to payment for subscription.");
@@ -46,6 +52,12 @@ function createWorkspace(title, projects = []) {
         saveData(workspaces);
         return newWorkspace;
     }
+}
+
+function editWorkspace(id, title) {
+    const workspace = workspaces.find(ws => ws.id === id);
+    workspace.title = title;
+    saveData(workspaces);
 }
 
 function deleteWorkspace(targetId) {
@@ -87,7 +99,6 @@ addWsBtn.addEventListener("click", () => {
 })
 
 function updateWorkspaceDropdown() {
-    const select = document.getElementById("workspace-selector");
     
     select.innerHTML = '<option value="default">Choose a Workspace</option>';
 
@@ -98,3 +109,39 @@ function updateWorkspaceDropdown() {
         select.appendChild(option);
     });
 }
+
+
+
+select.addEventListener("change", () => {
+    const activeWorkspace = workspaces.find(ws => ws.id === select.value);
+    activeWs = activeWorkspace;
+    updateTitle();
+    sidebar.innerHTML = `
+        <button id="rm-ws-btn">Remove</button>
+        <button id="edit-ws-btn">Edit</button>
+        <button id="add-project-btn">+ New Project</button>
+        <ul id="project-list"></ul>`;
+    const rmWsBtn = document.getElementById("rm-ws-btn");
+    rmWsBtn.addEventListener("click", () => {
+        deleteWorkspace(activeWs.id);
+        activeWs = null
+        updateWorkspaceDropdown();
+        updateTitle();
+    })
+})
+
+function updateTitle() {
+    if (!activeWs) {
+        appTitle.innerHTML = `<h1>ToDo App</h1>`;
+    } else {
+
+        appTitle.innerHTML = `<h1>${activeWs.title}</h1>`;
+    }
+}
+function createProject(title, tasks = []) {
+    const newProject = new Project(title, tasks);
+    activeWs.projects.push(newProject);
+    saveData(workspaces);
+    return newProject;
+}
+
