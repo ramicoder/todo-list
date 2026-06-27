@@ -15,9 +15,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #030f1b; /* Dark Blue */
+    background-color: #030f1b; 
     color: #ffffff;
-    padding: 25px 30px;
+    padding: 35px 30px;
 }
 
 #app-header h1 {
@@ -42,7 +42,7 @@ body {
 }
 
 #add-workspace-btn {
-    background-color: #4677c5; /* Lighter bright blue */
+    background-color: #4677c5; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -52,4 +52,46 @@ body {
 
 #add-workspace-btn:hover {
     background-color: #2563eb; 
+}
+
+#sidebar {
+    background-color: #172029;
+    height: calc(100vh - 100px);
+    width: clamp(150px, 20vw, 250px);
+    display: flex;
+    flex-direction: column;
+}
+
+#add-project-btn {
+    background-color: #4677c5; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin: 30px;
+}
+
+#add-project-btn:hover {
+    background-color: #2563eb; 
+}
+
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#workspace-form {
+    background: #172029;
+    padding: 20px;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
