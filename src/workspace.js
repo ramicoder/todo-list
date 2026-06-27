@@ -7,7 +7,7 @@ export default class Workspace {
     }
 
     addProject(project) {
-            this.projects.push(project);
+        this.projects.push(project);
     }
 
     deleteProject(targetId) {

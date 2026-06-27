@@ -117,9 +117,11 @@ select.addEventListener("change", () => {
     activeWs = activeWorkspace;
     updateTitle();
     sidebar.innerHTML = `
-        <button id="rm-ws-btn">Remove</button>
-        <button id="edit-ws-btn">Edit</button>
-        <button id="add-project-btn">+ New Project</button>
+        <div class="buttons">
+            <button id="rm-ws-btn">Remove</button>
+            <button id="edit-ws-btn">Edit</button>
+            <button id="add-project-btn">+ New Project</button>
+        </div>
         <ul id="project-list"></ul>`;
     const rmWsBtn = document.getElementById("rm-ws-btn");
     rmWsBtn.addEventListener("click", () => {
@@ -127,7 +129,22 @@ select.addEventListener("change", () => {
         activeWs = null
         updateWorkspaceDropdown();
         updateTitle();
-    })
+    });
+    const editWsBtn = document.getElementById("edit-ws-btn");
+    editWsBtn.addEventListener("click", () => {
+        appTitle.innerHTML = `<input type="text" id="new-workspace-title" placeholder="Workspace Name" required>`;
+        const input = document.getElementById("new-workspace-title");
+        input.focus();
+
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && input.value.trim() !== "") {
+                activeWs.title = input.value;
+                editWorkspace(activeWs.id, activeWs.title);
+                updateWorkspaceDropdown(); 
+                updateTitle(); 
+            }
+        });
+    });
 })
 
 function updateTitle() {

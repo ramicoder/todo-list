@@ -7,7 +7,7 @@
 }
 
 body {
-    background-color: #123885;
+    background-color: #081225;
 }
 
 
@@ -55,15 +55,17 @@ button:hover {
 }
 
 #sidebar {
-    background-color: #172029;
+    background-color: #99a1a9f9;
     height: calc(100vh - 100px);
     width: clamp(150px, 20vw, 250px);
     display: flex;
     flex-direction: column;
+    
 }
 
-#add-project-btn, #rm-ws-btn, #edit-ws-btn {
+.buttons button {
     margin: 15px;
+    width: 150px;
 }
 
 .modal {
