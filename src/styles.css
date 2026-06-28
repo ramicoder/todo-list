@@ -60,7 +60,11 @@ button:hover {
     width: clamp(150px, 20vw, 250px);
     display: flex;
     flex-direction: column;
-    
+    gap: 100px;
+}
+
+.buttons {
+    margin-top: 20px;
 }
 
 .buttons button {
@@ -85,4 +89,53 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+#project-list {
+    list-style: none;
+    padding: 0;
+}
+
+.project-item {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 6px;
+}
+
+.project-item:hover {
+    background-color: #f0f0f0; 
+    p {color: black;}
+}
+
+.project-item:active {
+    background-color: #e0e0e0; 
+}
+
+#project-list li {
+    display: flex;
+    justify-content: space-between;
+}
+
+.svg-duo {
+    display: flex;
+}
+
+.svg-duo svg {
+    width: 20px;
+    height: 20px;
+    fill: #555; 
+    cursor: pointer;
+    transition: fill 0.2s ease;
+}
+
+.svg-duo svg:hover {
+    fill: #000; 
+}
+
+.project-title {
+    font-weight: bold;
+    color: white;
 }

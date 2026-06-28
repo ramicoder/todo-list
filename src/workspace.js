@@ -16,11 +16,11 @@ export default class Workspace {
             (project => project.id !== targetId);
     }
 
-    editProject(targetId, updatedProperties) {
+    editProject(targetId, title) {
         
         const project = this.projects.find(p => p.id === targetId); 
-        if (project) {            
-            Object.assign(project, updatedProperties);
+        if (project) {
+            project.title = title;
         }
     }
 }

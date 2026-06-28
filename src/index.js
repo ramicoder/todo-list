@@ -1,6 +1,6 @@
 import "./styles.css";
 import Task from "./task.js";
-import Project from "./project.js";
+import {Project, projectLoader} from "./project.js";
 import Workspace from "./workspace.js";
 import { saveData, loadData } from "./storage.js";
 
@@ -10,6 +10,8 @@ const content = document.querySelector("#content");
 const select = document.getElementById("workspace-selector");
 const appTitle = document.getElementById("title");
 let activeWs;
+let addProjectBtn;
+
 
 let workspaces = rawData.map(data => {
 
@@ -45,6 +47,7 @@ updateWorkspaceDropdown();
 function createWorkspace(title, projects = []) {
     if (workspaces.length >= 2) {
         console.log("To have more than 2 workspaces, please proceed to payment for subscription.");
+        alert("To have more than 2 workspaces, please proceed to payment for subscription.");
         return;
     } else {
         const newWorkspace = new Workspace(title, projects);
@@ -110,8 +113,6 @@ function updateWorkspaceDropdown() {
     });
 }
 
-
-
 select.addEventListener("change", () => {
     const activeWorkspace = workspaces.find(ws => ws.id === select.value);
     activeWs = activeWorkspace;
@@ -122,13 +123,16 @@ select.addEventListener("change", () => {
             <button id="edit-ws-btn">Edit</button>
             <button id="add-project-btn">+ New Project</button>
         </div>
-        <ul id="project-list"></ul>`;
+        <div id="projects">
+        </div>`;
+        
     const rmWsBtn = document.getElementById("rm-ws-btn");
     rmWsBtn.addEventListener("click", () => {
         deleteWorkspace(activeWs.id);
         activeWs = null
         updateWorkspaceDropdown();
         updateTitle();
+        sidebar.innerHTML = "";
     });
     const editWsBtn = document.getElementById("edit-ws-btn");
     editWsBtn.addEventListener("click", () => {
@@ -145,6 +149,11 @@ select.addEventListener("change", () => {
             }
         });
     });
+
+    addProjectBtn = document.getElementById("add-project-btn");
+    addProjectBtn.addEventListener("click", createProjectModal);
+    projectLoader(activeWs.projects);
+    attachIconListeners();
 })
 
 function updateTitle() {
@@ -155,6 +164,7 @@ function updateTitle() {
         appTitle.innerHTML = `<h1>${activeWs.title}</h1>`;
     }
 }
+
 function createProject(title, tasks = []) {
     const newProject = new Project(title, tasks);
     activeWs.projects.push(newProject);
@@ -162,3 +172,68 @@ function createProject(title, tasks = []) {
     return newProject;
 }
 
+function createProjectModal() {
+    const modal = document.createElement("div");
+    modal.id = "project-modal";
+    modal.classList.add("modal");
+    modal.innerHTML = `
+    <form id="project-form">
+        <h2 style="color: white;">New Project</h2>
+        <input style="height: 30px;" type="text" id="project-title" placeholder="Project Name" required>
+        <button onclick="document.getElementById('project-modal').remove()" type="button">Cancel</button>
+        <button type="submit">Create</button>
+    </form>`;
+    content.appendChild(modal);
+
+    document.getElementById("project-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const titleInput = document.getElementById("project-title");
+        const newProject = new Project(titleInput.value);
+        
+        activeWs.addProject(newProject);
+        saveData(workspaces);
+        projectLoader(activeWs.projects);
+        attachIconListeners();
+        modal.remove();
+    });
+}
+
+function attachIconListeners() {
+    document.querySelectorAll('.rm-project').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            const projectId = e.target.closest('li').dataset.id;
+        
+            activeWs.deleteProject(projectId);
+            saveData(workspaces);
+
+            projectLoader(activeWs.projects);
+            attachIconListeners(); 
+        });
+    });
+
+    document.querySelectorAll('.edit-project').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            const li = e.target.closest('li');
+            const projectId = li.dataset.id;
+            const titleElement = li.querySelector(".project-title");
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.value = titleElement.textContent.trim(); 
+            input.required = true;
+
+            titleElement.replaceWith(input);
+            input.focus();
+
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" && input.value.trim() !== "") {
+                    titleElement.textContent = input.value;
+                    activeWs.editProject(projectId, input.value.trim()); 
+                    saveData(workspaces);
+                    projectLoader(activeWs.projects);
+                    attachIconListeners(); 
+                }
+            });
+        });
+    });
+}
