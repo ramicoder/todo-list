@@ -3,6 +3,7 @@ import Task from "./task.js";
 import {Project, projectLoader} from "./project.js";
 import Workspace from "./workspace.js";
 import { saveData, loadData } from "./storage.js";
+import sanitizeHTML from "./sanitize.js";
 
 const rawData = loadData();
 const sidebar = document.getElementById("sidebar");
@@ -47,7 +48,7 @@ updateWorkspaceDropdown();
 function createWorkspace(title, projects = []) {
     if (workspaces.length >= 2) {
         console.log("To have more than 2 workspaces, please proceed to payment for subscription.");
-        alert("To have more than 2 workspaces, please proceed to payment for subscription.");
+        alert("You reached your workspace limit! To have more than 2 workspaces, please proceed to payment for subscription.");
         return;
     } else {
         const newWorkspace = new Workspace(title, projects);
@@ -70,6 +71,8 @@ function deleteWorkspace(targetId) {
 }
 
 function createWorkSpaceModal() {
+    const existingModal = document.getElementById("workspace-modal");
+    if (existingModal) existingModal.remove();
    const modal = document.createElement("div");
    modal.id = "workspace-modal";
    modal.classList.add("modal");
@@ -88,10 +91,11 @@ function createWorkSpaceModal() {
         const titleInput = document.getElementById('workspace-title');
         createWorkspace(titleInput.value);
         updateWorkspaceDropdown();
+    
         titleInput.value = '';
         const modal = document.getElementById('workspace-modal');
         modal.style.display = "none";
-    })
+    });
 
 }
 const addWsBtn = document.getElementById("add-workspace-btn");
@@ -161,7 +165,7 @@ function updateTitle() {
         appTitle.innerHTML = `<h1>ToDo App</h1>`;
     } else {
 
-        appTitle.innerHTML = `<h1>${activeWs.title}</h1>`;
+        appTitle.innerHTML = `<h1>${sanitizeHTML(activeWs.title)}</h1>`;
     }
 }
 
