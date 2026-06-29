@@ -1,9 +1,11 @@
 import "./styles.css";
 import Task from "./task.js";
-import {Project, projectLoader} from "./project.js";
+import {Project, projectLoader, renderProjectView} from "./project.js";
 import Workspace from "./workspace.js";
 import { saveData, loadData } from "./storage.js";
 import sanitizeHTML from "./sanitize.js";
+import { parseISO } from 'date-fns';
+import { taskLoader } from "./task.js";
 
 const rawData = loadData();
 const sidebar = document.getElementById("sidebar");
@@ -11,6 +13,7 @@ const content = document.querySelector("#content");
 const select = document.getElementById("workspace-selector");
 const appTitle = document.getElementById("title");
 let activeWs;
+export let state = { currentProject: null };
 let addProjectBtn;
 
 
@@ -202,6 +205,39 @@ function createProjectModal() {
     });
 }
 
+export function createTaskModal() {
+    const modal = document.createElement("div");
+    modal.id = "task-modal";
+    modal.classList.add("modal");
+    modal.innerHTML = `
+    <form id="task-form">
+        <h2 style="color: white;">New Task</h2>
+        <input type="text" id="task-title" placeholder="Task Name" required>
+        <input type="textarea" id="task-descript" placeholder="Task Description" required>
+        <input type="date" id="task-date" min="2026-06-28" required>
+        <input type="textarea" id="task-notes" placeholder="Notes" required>
+        <input type="number" id="task-priority" min="1" max="5" required>
+        <button onclick="document.getElementById('task-modal').remove()" type="button">Cancel</button>
+        <button type="submit">Create</button>
+    </form>`;
+    content.appendChild(modal);
+
+    document.getElementById("task-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const titleInput = document.getElementById("task-title");
+        const descriptInput = document.getElementById("task-descript");
+        const dateInput = document.getElementById("task-date");
+        const notesInput = document.getElementById("task-notes");
+        const priorityInput = document.getElementById("task-priority");
+
+        const newTask = new Task(titleInput.value, descriptInput.value, dateInput.value, notesInput.value, priorityInput.value);
+        state.currentProject.addTask(newTask);
+        saveData(workspaces);
+        taskLoader(state.currentProject.tasks);
+        //attachTaskIconListeners();
+        modal.remove();
+    });
+}
 function attachIconListeners() {
     document.querySelectorAll('.rm-project').forEach(icon => {
         icon.addEventListener('click', (e) => {
@@ -225,9 +261,10 @@ function attachIconListeners() {
             input.type = "text";
             input.value = titleElement.textContent.trim(); 
             input.required = true;
-
+            
             titleElement.replaceWith(input);
             input.focus();
+            
 
             input.addEventListener("keydown", (e) => {
                 if (e.key === "Enter" && input.value.trim() !== "") {
@@ -235,6 +272,7 @@ function attachIconListeners() {
                     activeWs.editProject(projectId, input.value.trim()); 
                     saveData(workspaces);
                     projectLoader(activeWs.projects);
+                    
                     attachIconListeners(); 
                 }
             });

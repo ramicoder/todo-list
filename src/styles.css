@@ -6,11 +6,6 @@
     font-family: system-ui, -apple-system, sans-serif;
 }
 
-body {
-    background-color: #081225;
-}
-
-
 #app-header {
     display: flex;
     justify-content: space-between;
@@ -18,6 +13,7 @@ body {
     background-color: #030f1b; 
     color: #ffffff;
     padding: 35px 30px;
+    border-bottom: 3px solid #000;
 }
 
 #app-header h1 {
@@ -44,10 +40,11 @@ body {
 button {
     background-color: #4677c5; 
     color: white;
-    border: none;
+    border: 2px solid #444;
     padding: 10px 20px;
     border-radius: 4px;
     font-weight: 600;
+
 }
 
 button:hover {
@@ -57,10 +54,12 @@ button:hover {
 #sidebar {
     background-color: #99a1a9f9;
     height: calc(100vh - 100px);
-    width: clamp(150px, 20vw, 250px);
+    width: clamp(200px, 20vw, 250px);
     display: flex;
     flex-direction: column;
     gap: 100px;
+    overflow: scroll;
+    border-right: 3px solid #000;
 }
 
 .buttons {
@@ -138,4 +137,50 @@ button:hover {
 .project-title {
     font-weight: bold;
     color: white;
+}
+
+.non-header {
+    display: flex;
+}
+#content { 
+    width: 1700px;
+    background-color: #081225;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.task-list-header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+    border-bottom: 2px solid #000;
+    margin-bottom: 15px;
+    padding: 10px 80px;
+}
+
+/* The labels group */
+.task-columns {
+    display: flex;
+    gap: 100px; /* Adjust this space to line up with your actual tasks later */
+    font-weight: bold;
+    color: #888;
+}
+
+.add-task-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 13px;
+}
+
+.add-task-btn:hover {
+    background: #0056b3;
 }

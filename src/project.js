@@ -1,5 +1,7 @@
 import Task from "./task.js";
 import sanitizeHTML from "./sanitize.js";
+import { state, createTaskModal } from "./index.js";
+
 export class Project {
     constructor(title, tasks = []) {
         this.title = title;
@@ -17,15 +19,28 @@ export class Project {
             (task => task.id !== targetId);
     }
 
-    editTask(targetId, updatedProperties) {
-        
-        const task = this.tasks.find(t => t.id === targetId); 
-        if (task) {            
-            Object.assign(task, updatedProperties);
-        }
+    getTask(targetId) {
+        return this.tasks.find(task => task.id === targetId);
+    }
+
+    editTask(targetId, newDetails) {
+        const task = this.getTask(targetId);
+        if (task) task.updateTask(newDetails);
+    }
+
+    toggleTask(targetId) {
+        const task = this.getTask(targetId);
+        if (task) task.checked = !task.checked;
+    }
+
+    updateTask(newDetails) {
+    this.title = newDetails.title;
+    this.descript = newDetails.descript;
+    this.priority = newDetails.priority;
+    this.notes = newDetails.notes;
+    this.date = format(new Date(newDetails.date), 'yyyy-MM-dd');
     }
 }
-
 
 export const projectLoader = (projects) => {
     const projectGrp = document.getElementById("projects");
@@ -46,4 +61,32 @@ export const projectLoader = (projects) => {
     `).join("");
     
     list.innerHTML = htmlString;
+    list.querySelectorAll(".project-item").forEach(item => {
+        item.addEventListener("click", () => {
+            const id = item.dataset.id;
+            state.currentProject = projects.find(p => p.id === id);
+            renderProjectView();
+        });
+    });
 }
+export const renderProjectView = () => {
+    
+    const content = document.getElementById("content");
+    content.innerHTML = `
+        <div class="task-list-header">
+            <div class="task-columns">
+                <span>Title</span>
+                <span>Description</span>
+                <span>Date</span>
+                <span>Priority</span>
+                <span>Notes</span>
+            </div>
+            <button id="add-task-btn" class="add-task-btn">+</button>
+        </div>
+        <div id="tasks-container"></div> 
+    `;
+    document.getElementById("add-task-btn").addEventListener("click", () => {
+        console.log("hello")
+        createTaskModal(); 
+    });
+};
