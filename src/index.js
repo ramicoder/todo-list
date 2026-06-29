@@ -121,6 +121,9 @@ function updateWorkspaceDropdown() {
 }
 
 select.addEventListener("change", () => {
+    if (select.value == "default") {
+        return;
+    }
     const activeWorkspace = workspaces.find(ws => ws.id === select.value);
     activeWs = activeWorkspace;
     updateTitle();
@@ -140,6 +143,7 @@ select.addEventListener("change", () => {
         updateWorkspaceDropdown();
         updateTitle();
         sidebar.innerHTML = "";
+        content.innerHTML = "";
     });
     const editWsBtn = document.getElementById("edit-ws-btn");
     editWsBtn.addEventListener("click", () => {
@@ -186,7 +190,7 @@ function createProjectModal() {
     modal.innerHTML = `
     <form id="project-form">
         <h2 style="color: white;">New Project</h2>
-        <input style="height: 30px;" type="text" id="project-title" placeholder="Project Name" required>
+        <input type="text" id="project-title" placeholder="Project Name" required>
         <button onclick="document.getElementById('project-modal').remove()" type="button">Cancel</button>
         <button type="submit">Create</button>
     </form>`;
@@ -215,8 +219,8 @@ export function createTaskModal() {
         <input type="text" id="task-title" placeholder="Task Name" required>
         <input type="textarea" id="task-descript" placeholder="Task Description" required>
         <input type="date" id="task-date" min="2026-06-28" required>
-        <input type="textarea" id="task-notes" placeholder="Notes" required>
-        <input type="number" id="task-priority" min="1" max="5" required>
+        <input type="textarea" id="task-notes" placeholder="Notes" maxlength="70" required>
+        <input type="number" id="task-priority" min="1" max="5" placeholder="#" required>
         <button onclick="document.getElementById('task-modal').remove()" type="button">Cancel</button>
         <button type="submit">Create</button>
     </form>`;

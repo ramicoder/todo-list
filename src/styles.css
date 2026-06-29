@@ -160,7 +160,7 @@ button:hover {
     padding: 10px 80px;
 }
 
-/* The labels group */
+
 .task-columns {
     display: flex;
     gap: 100px; /* Adjust this space to line up with your actual tasks later */
@@ -171,16 +171,103 @@ button:hover {
 .add-task-btn {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 100%;
     background: #007bff;
     color: white;
-    font-size: 24px;
+    font-size: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 13px;
+    padding-bottom: 16px;
+    margin-right: 25px;
 }
 
 .add-task-btn:hover {
     background: #0056b3;
 }
+
+input {
+    height: 40px;
+    text-align: center;
+}
+
+
+.task-columns, .task-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 80px; 
+    align-items: center;
+    gap: 15px;
+}
+
+
+.task-item {
+    background: #2a2a2a;
+    padding: 12px 70px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.task-list-header {
+    padding: 10px 0px 10px 50px;
+    border-bottom: 2px solid #444;
+    margin-bottom: 15px;
+}
+
+
+.task-columns {
+    font-weight: bold;
+    color: #888;
+    width: calc(100% - 60px); /* Leave room for the add button */
+}
+
+
+.task-actions { display: flex; gap: 10px; }
+.icon-wrap { display: flex; align-items: center; }
+.icon-btn {
+    background: none; border: none;
+    display: flex; transition: transform 0.1s;
+}
+.icon-btn:hover { transform: scale(1.15); }
+.icon-btn svg {
+    width: 20px; height: 20px; fill: #aaa; transition: fill 0.2s;
+}
+.icon-btn:hover svg { fill: white; }
+.delete-btn:hover svg { fill: #ff4c4c; }
+.edit-btn:hover svg { fill: #ffffff; }
+
+
+#info-card {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.card-content {
+    background: #5e5e5e;
+    padding: 30px;
+    border-radius: 8px;
+    width: 500px;
+    color: rgb(255, 253, 253);
+    text-align: center;
+    overflow: scroll;
+}
+
+.card-content h3 { margin-top: 0; }
+.card-content p { color: #e7e7e7; margin-bottom: 20px; }
+
+#close-card {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#close-card:hover { background: #0056b3; }

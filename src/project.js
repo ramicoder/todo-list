@@ -1,6 +1,7 @@
 import Task from "./task.js";
 import sanitizeHTML from "./sanitize.js";
 import { state, createTaskModal } from "./index.js";
+import { taskLoader } from "./task.js";
 
 export class Project {
     constructor(title, tasks = []) {
@@ -66,6 +67,7 @@ export const projectLoader = (projects) => {
             const id = item.dataset.id;
             state.currentProject = projects.find(p => p.id === id);
             renderProjectView();
+            taskLoader(state.currentProject.tasks);
         });
     });
 }

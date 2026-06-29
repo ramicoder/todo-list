@@ -1,4 +1,5 @@
 import { format, parseISO } from 'date-fns';
+import { state } from './index.js';
 export default class Task {
 
     constructor(title, descript, date, notes, priority, checked = false) {
@@ -13,10 +14,30 @@ export default class Task {
 
     
 }  
+const showCard = (title, text) => {
+    
+    const existing = document.getElementById("info-card");
+    if (existing) existing.remove();
+
+    const card = document.createElement("div");
+    card.id = "info-card";
+    card.innerHTML = `
+        <div class="card-content">
+            <h3>${title}</h3>
+            <br><br>
+            <p>${text || "No content provided."}</p>
+            <br>
+            <button id="close-card">Close</button>
+        </div>
+    `;
+    
+    document.body.appendChild(card);
+    document.getElementById("close-card").onclick = () => card.remove();
+};
 export const taskLoader = (tasks) => {
     const tasksContainer = document.getElementById("tasks-container");
     
-    // Failsafe in case the container doesn't exist yet
+  
     if (!tasksContainer) return; 
 
     if (!tasks || tasks.length === 0) {
@@ -26,17 +47,56 @@ export const taskLoader = (tasks) => {
 
     tasksContainer.innerHTML = tasks.map(task => `
         <div class="task-item" data-id="${task.id}">
-            <div class="task-details">
-                <span>${task.title}</span>
-                <span>${task.descript}</span>
-                <span>${task.date}</span>
-                <span>${task.priority}</span>
-                <span>${task.notes}</span>
+            <span style="padding-left: -20px;" class="task-title">${task.title}</span>
+            
+            <div class="icon-wrap">
+                <button class="icon-btn" title="Description">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>information-outline</title><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" /></svg>
+                </button>
             </div>
+            
+            <span class="task-date">${task.date}</span>
+            
+            <span class="task-priority">${task.priority}</span>
+            <div class="icon-wrap">
+                <button class="icon-btn" title="Notes">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>note-outline</title><path d="M14,10H19.5L14,4.5V10M5,3H15L21,9V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3M5,5V19H19V12H12V5H5Z" /></svg>
+                </button>
+            </div>
+            
+            
+
             <div class="task-actions">
-                <span class="icon-edit"></span>
-                <span class="icon-delete"></span>
+                <button class="icon-btn edit-btn" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>pencil</title><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>
+                </button>
+                <button class="icon-btn delete-btn" title="Delete">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete</title><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg>
+                </button>
             </div>
         </div>
     `).join("");
+
+    tasksContainer.addEventListener("click", (e) => {
+        
+        const btn = e.target.closest(".icon-btn");
+        if (!btn) return;
+
+        
+        const taskItem = btn.closest(".task-item");
+        const taskId = taskItem.dataset.id;
+        const task = state.currentProject.getTask(taskId); 
+
+        
+        if (btn.classList.contains("delete-btn")) {
+            state.currentProject.deleteTask(taskId);
+            taskLoader(state.currentProject.tasks); // Re-render the list immediately
+        } 
+        else if (btn.title === "Description") {
+            showCard("Description", task.descript);
+        } 
+        else if (btn.title === "Notes") {
+            showCard("Notes", task.notes);
+        }
+    });
 };
