@@ -1,8 +1,9 @@
 import { format, parseISO } from 'date-fns';
 import { state } from './index.js';
+
 export default class Task {
 
-    constructor(title, descript, date, notes, priority, checked = false) {
+    constructor(title, descript, date, priority, notes, checked = false) {
         this.title = title;
         this.descript = descript;
         this.date = format(parseISO(date), 'yyyy-MM-dd');
@@ -98,5 +99,61 @@ export const taskLoader = (tasks) => {
         else if (btn.title === "Notes") {
             showCard("Notes", task.notes);
         }
+        else if (btn.title === "Edit") {
+            editTaskForm(task);
+        }
     });
+};
+
+function editTaskForm(task) {
+    
+    const existing = document.getElementById("edit-modal");
+    if (existing) existing.remove();
+
+    const modal = document.createElement("div");
+    modal.id = "edit-modal";
+
+    modal.innerHTML = `
+        <div class="card-content edit-form">
+            <h3>Edit Task</h3>
+            <input type="text" id="edit-title" value="${task.title}" required>
+            <input type="textarea" id="edit-desc" value="${task.descript}" required>
+            <input type="date" id="edit-date" value="${task.date}" required>
+            <input type="number" id="edit-priority" value="${task.priority}" min="1" max="5" required>
+            <input type="textarea" maxlength="70" id="edit-notes" value="${task.notes}" required>
+            
+            <p id="edit-error" style="color: #fbfbfb; display: none; font-size: 0.9em; margin: 5px 0;">No changes were made.</p>
+            
+            <div class="modal-actions">
+                <button id="save-edit-btn" class="submit-btn">Save</button>
+                <button id="cancel-edit-btn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("content").appendChild(modal);
+    
+
+    document.getElementById("cancel-edit-btn").onclick = () => modal.remove();
+
+    document.getElementById("save-edit-btn").onclick = () => {
+        const newDetails = {
+            title: document.getElementById("edit-title").value,
+            descript: document.getElementById("edit-desc").value,
+            date: document.getElementById("edit-date").value,
+            priority: document.getElementById("edit-priority").value,
+            notes: document.getElementById("edit-notes").value
+        };
+        const hasChanged = Object.keys(newDetails).some(key => newDetails[key] !== String(task[key]));
+
+        if (!hasChanged) {
+            document.getElementById("edit-error").style.display = "block"; 
+            return; 
+        }
+        
+        
+        state.currentProject.editTask(task.id, newDetails);
+        taskLoader(state.currentProject.tasks); 
+        modal.remove(); 
+    };
 };

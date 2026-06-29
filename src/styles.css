@@ -163,7 +163,7 @@ button:hover {
 
 .task-columns {
     display: flex;
-    gap: 100px; /* Adjust this space to line up with your actual tasks later */
+    gap: 100px; 
     font-weight: bold;
     color: #888;
 }
@@ -219,7 +219,7 @@ input {
 .task-columns {
     font-weight: bold;
     color: #888;
-    width: calc(100% - 60px); /* Leave room for the add button */
+    width: calc(100% - 60px); 
 }
 
 

@@ -26,20 +26,12 @@ export class Project {
 
     editTask(targetId, newDetails) {
         const task = this.getTask(targetId);
-        if (task) task.updateTask(newDetails);
+        if (task) Object.assign(task, newDetails);
     }
 
     toggleTask(targetId) {
         const task = this.getTask(targetId);
         if (task) task.checked = !task.checked;
-    }
-
-    updateTask(newDetails) {
-    this.title = newDetails.title;
-    this.descript = newDetails.descript;
-    this.priority = newDetails.priority;
-    this.notes = newDetails.notes;
-    this.date = format(new Date(newDetails.date), 'yyyy-MM-dd');
     }
 }
 

@@ -234,11 +234,10 @@ export function createTaskModal() {
         const notesInput = document.getElementById("task-notes");
         const priorityInput = document.getElementById("task-priority");
 
-        const newTask = new Task(titleInput.value, descriptInput.value, dateInput.value, notesInput.value, priorityInput.value);
+        const newTask = new Task(titleInput.value, descriptInput.value, dateInput.value, priorityInput.value, notesInput.value);
         state.currentProject.addTask(newTask);
         saveData(workspaces);
         taskLoader(state.currentProject.tasks);
-        //attachTaskIconListeners();
         modal.remove();
     });
 }
