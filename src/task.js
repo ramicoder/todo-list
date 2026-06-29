@@ -151,7 +151,6 @@ function editTaskForm(task) {
             return; 
         }
         
-        
         state.currentProject.editTask(task.id, newDetails);
         taskLoader(state.currentProject.tasks); 
         modal.remove(); 
