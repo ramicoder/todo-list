@@ -246,6 +246,7 @@ input {
     justify-content: center;
     align-items: center;
     z-index: 1;
+    backdrop-filter: blur(4px);
 }
 
 .card-content {
@@ -267,7 +268,63 @@ input {
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
-    cursor: pointer;
 }
 
 #close-card:hover { background: #0056b3; }
+
+
+
+#edit-modal {
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.75); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    z-index: 1;
+    backdrop-filter: blur(4px); 
+}
+
+/* The actual form card */
+.edit-form {
+    background: #2a2a2a;
+    padding: 30px;
+    border-radius: 12px;
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: #e0e0e0;
+}
+
+.edit-form input, .edit-form textarea {
+    background: #1a1a1a;
+    border: 1px solid #444;
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.submit-btn, .cancel-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.submit-btn { background: #007bff; color: white; }
+.submit-btn:hover { background: #0056b3;}
+
+.cancel-btn { background: #444; color: white; }
+.cancel-btn:hover { background: #555; }

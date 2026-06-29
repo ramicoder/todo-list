@@ -1,5 +1,6 @@
 import { format, parseISO } from 'date-fns';
 import { state } from './index.js';
+import sanitizeHTML from './sanitize.js';
 
 export default class Task {
 
@@ -24,9 +25,9 @@ const showCard = (title, text) => {
     card.id = "info-card";
     card.innerHTML = `
         <div class="card-content">
-            <h3>${title}</h3>
+            <h3>${sanitizeHTML(title)}</h3>
             <br><br>
-            <p>${text || "No content provided."}</p>
+            <p>${sanitizeHTML(text) || "No content provided."}</p>
             <br>
             <button id="close-card">Close</button>
         </div>
@@ -47,8 +48,8 @@ export const taskLoader = (tasks) => {
     } 
 
     tasksContainer.innerHTML = tasks.map(task => `
-        <div class="task-item" data-id="${task.id}">
-            <span style="padding-left: -20px;" class="task-title">${task.title}</span>
+        <div class="task-item" data-id="${sanitizeHTML(task.id)}">
+            <span style="padding-left: -20px;" class="task-title">${sanitizeHTML(task.title)}</span>
             
             <div class="icon-wrap">
                 <button class="icon-btn" title="Description">
@@ -114,13 +115,13 @@ function editTaskForm(task) {
     modal.id = "edit-modal";
 
     modal.innerHTML = `
-        <div class="card-content edit-form">
-            <h3>Edit Task</h3>
-            <input type="text" id="edit-title" value="${task.title}" required>
-            <input type="textarea" id="edit-desc" value="${task.descript}" required>
-            <input type="date" id="edit-date" value="${task.date}" required>
+        <form class="card-content edit-form">
+            <h2>Edit Task</h3>
+            <input type="text" id="edit-title" value="${sanitizeHTML(task.title)}" required>
+            <input type="textarea" id="edit-desc" value="${sanitizeHTML(task.descript)}" required>
+            <input type="date" min="2026-06-28" id="edit-date" value="${task.date}" required>
             <input type="number" id="edit-priority" value="${task.priority}" min="1" max="5" required>
-            <input type="textarea" maxlength="70" id="edit-notes" value="${task.notes}" required>
+            <input type="textarea" maxlength="70" id="edit-notes" value="${sanitizeHTML(task.notes)}" required>
             
             <p id="edit-error" style="color: #fbfbfb; display: none; font-size: 0.9em; margin: 5px 0;">No changes were made.</p>
             
@@ -128,7 +129,7 @@ function editTaskForm(task) {
                 <button id="save-edit-btn" class="submit-btn">Save</button>
                 <button id="cancel-edit-btn" class="cancel-btn">Cancel</button>
             </div>
-        </div>
+        </form>
     `;
 
     document.getElementById("content").appendChild(modal);
@@ -136,7 +137,8 @@ function editTaskForm(task) {
 
     document.getElementById("cancel-edit-btn").onclick = () => modal.remove();
 
-    document.getElementById("save-edit-btn").onclick = () => {
+    document.getElementById("save-edit-btn").onsubmit = (e) => {
+        e.preventDefault();
         const newDetails = {
             title: document.getElementById("edit-title").value,
             descript: document.getElementById("edit-desc").value,
