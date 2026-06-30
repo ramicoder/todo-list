@@ -192,25 +192,31 @@ input {
 }
 
 
-.task-columns, .task-item {
+.task-columns {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 80px; 
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 120px; 
     align-items: center;
-    gap: 15px;
+    gap: 10px;
+    font-weight: bold;
+    color: #888;
 }
 
-
 .task-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 40px 80px; 
+    align-items: center;
+    gap: 10px;
     background: #3a4b6f;
-    padding: 12px 70px;
     border-radius: 8px;
     margin-bottom: 10px;
     color: white;
     font-weight: bold;
+    padding: 12px 70px;
 }
 
+
 .task-list-header {
-    padding: 10px 0px 10px 50px;
+    padding: 10px 0px 10px 60px;
     border-bottom: 2px solid #444;
     margin-bottom: 15px;
 }
@@ -219,7 +225,7 @@ input {
 .task-columns {
     font-weight: bold;
     color: #888;
-    width: calc(100% - 60px); 
+    width: calc(100% - 80px); 
 }
 
 
