@@ -65,6 +65,7 @@ export const projectLoader = (projects) => {
 }
 export const renderProjectView = () => {
     
+    
     const content = document.getElementById("content");
     content.innerHTML = `
         <div class="task-list-header">
@@ -80,7 +81,6 @@ export const renderProjectView = () => {
         <div id="tasks-container"></div> 
     `;
     document.getElementById("add-task-btn").addEventListener("click", () => {
-        console.log("hello")
         createTaskModal(); 
     });
 };

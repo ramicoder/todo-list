@@ -201,7 +201,7 @@ input {
 
 
 .task-item {
-    background: #2a2a2a;
+    background: #3a4b6f;
     padding: 12px 70px;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -286,7 +286,7 @@ input {
     backdrop-filter: blur(4px); 
 }
 
-/* The actual form card */
+
 .edit-form {
     background: #2a2a2a;
     padding: 30px;
@@ -328,3 +328,18 @@ input {
 
 .cancel-btn { background: #444; color: white; }
 .cancel-btn:hover { background: #555; }
+
+.task-checkbox {
+    height: 20px;
+    width: 20px;
+    accent-color: grey;
+}
+
+.task-checkbox:hover {
+    height: 25px;
+    width: 25px;
+}
+
+.task-item.completed {
+    background-color: #424242;
+}

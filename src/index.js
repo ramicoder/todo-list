@@ -6,8 +6,8 @@ import { saveData, loadData } from "./storage.js";
 import sanitizeHTML from "./sanitize.js";
 import { parseISO } from 'date-fns';
 import { taskLoader } from "./task.js";
-
-const rawData = loadData();
+//localStorage.clear()
+const rawData = Array.from(loadData());
 const sidebar = document.getElementById("sidebar");
 const content = document.querySelector("#content");
 const select = document.getElementById("workspace-selector");
@@ -16,35 +16,7 @@ let activeWs;
 export let state = { currentProject: null };
 let addProjectBtn;
 
-
-let workspaces = rawData.map(data => {
-
-    const ws = new Workspace(data.title);
-    ws.id = data.id;
-
-    ws.projects = data.projects.map(projData => {
-        const p = new Project(projData.title);
-        p.id = projData.id;
-
-
-        p.tasks = projData.tasks.map(taskData => {
-            const t = new Task(
-                taskData.title,
-                taskData.descript,
-                taskData.date,
-                taskData.priority,
-                taskData.notes,
-                taskData.checked
-            );
-            t.id = taskData.id;
-            return t;
-        });
-
-        return p;
-    });
-
-    return ws;
-});
+export let workspaces = loadData();
 
 updateWorkspaceDropdown();
 

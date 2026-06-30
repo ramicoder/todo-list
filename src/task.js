@@ -1,6 +1,6 @@
 import { format, parseISO } from 'date-fns';
 import { state } from './index.js';
-import sanitizeHTML from './sanitize.js';
+import { saveData } from './storage.js';
 
 export default class Task {
 
@@ -14,10 +14,10 @@ export default class Task {
         this.id = crypto.randomUUID();
     }
 
-    
+
 }  
 const showCard = (title, text) => {
-    
+
     const existing = document.getElementById("info-card");
     if (existing) existing.remove();
 
@@ -25,21 +25,21 @@ const showCard = (title, text) => {
     card.id = "info-card";
     card.innerHTML = `
         <div class="card-content">
-            <h3>${sanitizeHTML(title)}</h3>
+            <h3>${title}</h3>
             <br><br>
-            <p>${sanitizeHTML(text) || "No content provided."}</p>
+            <p>${text || "No content provided."}</p>
             <br>
             <button id="close-card">Close</button>
         </div>
     `;
-    
+
     document.body.appendChild(card);
     document.getElementById("close-card").onclick = () => card.remove();
 };
 export const taskLoader = (tasks) => {
     const tasksContainer = document.getElementById("tasks-container");
-    
-  
+
+
     if (!tasksContainer) return; 
 
     if (!tasks || tasks.length === 0) {
@@ -48,8 +48,8 @@ export const taskLoader = (tasks) => {
     } 
 
     tasksContainer.innerHTML = tasks.map(task => `
-        <div class="task-item" data-id="${sanitizeHTML(task.id)}">
-            <span style="padding-left: -20px;" class="task-title">${sanitizeHTML(task.title)}</span>
+        <div class="task-item ${task.checked ? 'completed' : ''}" data-id="${task.id}">
+            <span style="padding-left: -20px;" class="task-title">${task.title}</span>
             
             <div class="icon-wrap">
                 <button class="icon-btn" title="Description">
@@ -67,7 +67,7 @@ export const taskLoader = (tasks) => {
             </div>
             
             
-
+            <input type="checkbox" class="task-checkbox" ${task.checked ? 'checked' : ''}>
             <div class="task-actions">
                 <button class="icon-btn edit-btn" title="Edit">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>pencil</title><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>
@@ -79,20 +79,30 @@ export const taskLoader = (tasks) => {
         </div>
     `).join("");
 
-    tasksContainer.addEventListener("click", (e) => {
-        
-        const btn = e.target.closest(".icon-btn");
-        if (!btn) return;
+    tasksContainer.onclick = (e) => {
 
         
-        const taskItem = btn.closest(".task-item");
+        const taskItem = e.target.closest(".task-item");
+        if (!taskItem) return;
+        
+        
         const taskId = taskItem.dataset.id;
         const task = state.currentProject.getTask(taskId); 
 
+        if (e.target.classList.contains("task-checkbox")) {
+            
+            state.currentProject.toggleTask(taskId);
+            saveData(); 
+            taskLoader(state.currentProject.tasks);
+            return;
+        }
+        const btn = e.target.closest(".icon-btn");
         
+        if (!btn) return;
+
         if (btn.classList.contains("delete-btn")) {
             state.currentProject.deleteTask(taskId);
-            taskLoader(state.currentProject.tasks); // Re-render the list immediately
+            taskLoader(state.currentProject.tasks); 
         } 
         else if (btn.title === "Description") {
             showCard("Description", task.descript);
@@ -103,11 +113,11 @@ export const taskLoader = (tasks) => {
         else if (btn.title === "Edit") {
             editTaskForm(task);
         }
-    });
+    };
 };
 
 function editTaskForm(task) {
-    
+
     const existing = document.getElementById("edit-modal");
     if (existing) existing.remove();
 
@@ -115,13 +125,13 @@ function editTaskForm(task) {
     modal.id = "edit-modal";
 
     modal.innerHTML = `
-        <form class="card-content edit-form">
-            <h2>Edit Task</h3>
-            <input type="text" id="edit-title" value="${sanitizeHTML(task.title)}" required>
-            <input type="textarea" id="edit-desc" value="${sanitizeHTML(task.descript)}" required>
+        <form id="edit-form" class="card-content edit-form">
+            <h3>Edit Task</h3>
+            <input type="text" id="edit-title" value="${task.title}" required>
+            <input type="textarea" id="edit-desc" value="${task.descript}" required>
             <input type="date" min="2026-06-28" id="edit-date" value="${task.date}" required>
             <input type="number" id="edit-priority" value="${task.priority}" min="1" max="5" required>
-            <input type="textarea" maxlength="70" id="edit-notes" value="${sanitizeHTML(task.notes)}" required>
+            <input type="textarea" maxlength="70" id="edit-notes" value="${task.notes}" required>
             
             <p id="edit-error" style="color: #fbfbfb; display: none; font-size: 0.9em; margin: 5px 0;">No changes were made.</p>
             
@@ -133,11 +143,11 @@ function editTaskForm(task) {
     `;
 
     document.getElementById("content").appendChild(modal);
-    
+
 
     document.getElementById("cancel-edit-btn").onclick = () => modal.remove();
 
-    document.getElementById("save-edit-btn").onsubmit = (e) => {
+    document.getElementById("edit-form").onsubmit = (e) => {
         e.preventDefault();
         const newDetails = {
             title: document.getElementById("edit-title").value,
@@ -152,8 +162,10 @@ function editTaskForm(task) {
             document.getElementById("edit-error").style.display = "block"; 
             return; 
         }
+
         
         state.currentProject.editTask(task.id, newDetails);
+        saveData(state);
         taskLoader(state.currentProject.tasks); 
         modal.remove(); 
     };
