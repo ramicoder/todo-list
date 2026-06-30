@@ -7,7 +7,6 @@ import sanitizeHTML from "./sanitize.js";
 import { parseISO } from 'date-fns';
 import { taskLoader } from "./task.js";
 //localStorage.clear()
-const rawData = Array.from(loadData());
 const sidebar = document.getElementById("sidebar");
 const content = document.querySelector("#content");
 const select = document.getElementById("workspace-selector");
@@ -231,13 +230,12 @@ function attachIconListeners() {
             const li = e.target.closest('li');
             const projectId = li.dataset.id;
             const titleElement = li.querySelector(".project-title");
-
             const input = document.createElement("input");
             input.type = "text";
             input.value = titleElement.textContent.trim(); 
             input.required = true;
             
-            titleElement.replaceWith(input);
+            li.replaceWith(input);
             input.focus();
             
 
