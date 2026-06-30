@@ -187,7 +187,7 @@ export function createTaskModal() {
     modal.innerHTML = `
     <form id="task-form">
         <h2 style="color: white;">New Task</h2>
-        <input type="text" id="task-title" placeholder="Task Name" required>
+        <input type="text" maxlength="20" id="task-title" placeholder="Task Name" required>
         <input type="textarea" id="task-descript" placeholder="Task Description" required>
         <input type="date" id="task-date" min="2026-06-28" required>
         <input type="textarea" id="task-notes" placeholder="Notes" maxlength="70" required>

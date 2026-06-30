@@ -127,7 +127,7 @@ function editTaskForm(task) {
     modal.innerHTML = `
         <form id="edit-form" class="card-content edit-form">
             <h3>Edit Task</h3>
-            <input type="text" id="edit-title" value="${task.title}" required>
+            <input type="text" maxlength="20" id="edit-title" value="${task.title}" required>
             <input type="textarea" id="edit-desc" value="${task.descript}" required>
             <input type="date" min="2026-06-28" id="edit-date" value="${task.date}" required>
             <input type="number" id="edit-priority" value="${task.priority}" min="1" max="5" required>
@@ -170,3 +170,19 @@ function editTaskForm(task) {
         modal.remove(); 
     };
 };
+
+export function sortTasksByDate() {
+    // used ... so the original array stays the way it is and a sorted one is copied without mutating the original array.
+    const sortedTasks = [...state.currentProject.tasks].sort((a, b) => {
+        return a.date.localeCompare(b.date); 
+    });
+    taskLoader(sortedTasks);
+}
+
+export function sortTasksByPriority() {
+    // used ... so the original array stays the way it is and a sorted one is copied without mutating the original array.
+    const sortedTasks = [...state.currentProject.tasks].sort((b, a) => {
+        return a.priority.localeCompare(b.priority); 
+    });
+    taskLoader(sortedTasks);
+}

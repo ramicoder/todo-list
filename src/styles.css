@@ -194,7 +194,7 @@ input {
 
 .task-columns {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 120px; 
+    grid-template-columns: 2fr 2fr 2fr 2.2fr 0.1fr 120px; 
     align-items: center;
     gap: 10px;
     font-weight: bold;
@@ -203,9 +203,9 @@ input {
 
 .task-item {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 40px 80px; 
+    grid-template-columns: 1fr 1fr 1.1fr 0.9fr 1.5fr 40px 80px; 
     align-items: center;
-    gap: 10px;
+    gap: 120px;
     background: #3a4b6f;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -348,4 +348,13 @@ input {
 
 .task-item.completed {
     background-color: #424242;
+}
+
+.sort-btn {
+    background: #007bff;
+    color: white;
+    margin-right: 30px;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: bold;
 }

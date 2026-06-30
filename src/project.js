@@ -2,7 +2,7 @@ import Task from "./task.js";
 import sanitizeHTML from "./sanitize.js";
 import { state, createTaskModal } from "./index.js";
 import { taskLoader } from "./task.js";
-
+import { sortTasksByDate, sortTasksByPriority } from "./task.js";
 export class Project {
     constructor(title, tasks = []) {
         this.title = title;
@@ -69,18 +69,28 @@ export const renderProjectView = () => {
     const content = document.getElementById("content");
     content.innerHTML = `
         <div class="task-list-header">
-            <div class="task-columns">
-                <span>Title</span>
-                <span>Description</span>
-                <span>Date</span>
-                <span>Priority</span>
-                <span>Notes</span>
-            </div>
-            <button id="add-task-btn" class="add-task-btn">+</button>
+        <div class="task-columns">
+        <span>Title</span>
+        <span>Description</span>
+        <span>Date</span>
+        <span>Priority</span>
+        <span>Notes</span>
+        </div>
+        <button id="sort-priority-btn" class="sort-btn">Sort Tasks by Priority</button>
+        <button id="sort-date-btn" class="sort-btn">Sort Tasks by Date</button>
+        <button id="add-task-btn" class="add-task-btn">+</button>
         </div>
         <div id="tasks-container"></div> 
     `;
     document.getElementById("add-task-btn").addEventListener("click", () => {
         createTaskModal(); 
     });
+    document.getElementById("sort-date-btn").addEventListener("click", () => {
+        sortTasksByDate(); 
+    });
+
+    document.getElementById("sort-priority-btn").addEventListener("click", () => {
+        sortTasksByPriority(); 
+    });
 };
+
