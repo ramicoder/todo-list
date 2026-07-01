@@ -1,29 +1,25 @@
-import { format, parseISO } from 'date-fns';
-import { state } from './index.js';
-import { saveData } from './storage.js';
+import { format, parseISO } from "date-fns";
+import { state } from "./index.js";
+import { saveData } from "./storage.js";
 
 export default class Task {
-
-    constructor(title, descript, date, priority, notes, checked = false) {
-        this.title = title;
-        this.descript = descript;
-        this.date = format(parseISO(date), 'yyyy-MM-dd');
-        this.priority = priority;
-        this.notes = notes;
-        this.checked = checked;
-        this.id = crypto.randomUUID();
-    }
-
-
-}  
+  constructor(title, descript, date, priority, notes, checked = false) {
+    this.title = title;
+    this.descript = descript;
+    this.date = format(parseISO(date), "yyyy-MM-dd");
+    this.priority = priority;
+    this.notes = notes;
+    this.checked = checked;
+    this.id = crypto.randomUUID();
+  }
+}
 const showCard = (title, text) => {
+  const existing = document.getElementById("info-card");
+  if (existing) existing.remove();
 
-    const existing = document.getElementById("info-card");
-    if (existing) existing.remove();
-
-    const card = document.createElement("div");
-    card.id = "info-card";
-    card.innerHTML = `
+  const card = document.createElement("div");
+  card.id = "info-card";
+  card.innerHTML = `
         <div class="card-content">
             <h3>${title}</h3>
             <br><br>
@@ -33,22 +29,24 @@ const showCard = (title, text) => {
         </div>
     `;
 
-    document.body.appendChild(card);
-    document.getElementById("close-card").onclick = () => card.remove();
+  document.body.appendChild(card);
+  document.getElementById("close-card").onclick = () => card.remove();
 };
 export const taskLoader = (tasks) => {
-    const tasksContainer = document.getElementById("tasks-container");
+  const tasksContainer = document.getElementById("tasks-container");
 
+  if (!tasksContainer) return;
 
-    if (!tasksContainer) return; 
+  if (!tasks || tasks.length === 0) {
+    tasksContainer.innerHTML =
+      "<p style='color: #888; padding: 20px;'>No tasks yet.</p>";
+    return;
+  }
 
-    if (!tasks || tasks.length === 0) {
-        tasksContainer.innerHTML = "<p style='color: #888; padding: 20px;'>No tasks yet.</p>";
-        return;
-    } 
-
-    tasksContainer.innerHTML = tasks.map(task => `
-        <div class="task-item ${task.checked ? 'completed' : ''}" data-id="${task.id}">
+  tasksContainer.innerHTML = tasks
+    .map(
+      (task) => `
+        <div class="task-item ${task.checked ? "completed" : ""}" data-id="${task.id}">
             <span style="padding-left: -20px;" class="task-title">${task.title}</span>
             
             <div class="icon-wrap">
@@ -67,7 +65,7 @@ export const taskLoader = (tasks) => {
             </div>
             
             
-            <input type="checkbox" class="task-checkbox" ${task.checked ? 'checked' : ''}>
+            <input type="checkbox" class="task-checkbox" ${task.checked ? "checked" : ""}>
             <div class="task-actions">
                 <button class="icon-btn edit-btn" title="Edit">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>pencil</title><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>
@@ -77,55 +75,48 @@ export const taskLoader = (tasks) => {
                 </button>
             </div>
         </div>
-    `).join("");
+    `,
+    )
+    .join("");
 
-    tasksContainer.onclick = (e) => {
+  tasksContainer.onclick = (e) => {
+    const taskItem = e.target.closest(".task-item");
+    if (!taskItem) return;
 
-        
-        const taskItem = e.target.closest(".task-item");
-        if (!taskItem) return;
-        
-        
-        const taskId = taskItem.dataset.id;
-        const task = state.currentProject.getTask(taskId); 
+    const taskId = taskItem.dataset.id;
+    const task = state.currentProject.getTask(taskId);
 
-        if (e.target.classList.contains("task-checkbox")) {
-            
-            state.currentProject.toggleTask(taskId);
-            saveData(); 
-            taskLoader(state.currentProject.tasks);
-            return;
-        }
-        const btn = e.target.closest(".icon-btn");
-        
-        if (!btn) return;
+    if (e.target.classList.contains("task-checkbox")) {
+      state.currentProject.toggleTask(taskId);
+      saveData();
+      taskLoader(state.currentProject.tasks);
+      return;
+    }
+    const btn = e.target.closest(".icon-btn");
 
-        if (btn.classList.contains("delete-btn")) {
-            state.currentProject.deleteTask(taskId);
-            taskLoader(state.currentProject.tasks); 
-        } 
-        else if (btn.title === "Description") {
-            showCard("Description", task.descript);
-        } 
-        else if (btn.title === "Notes") {
-            showCard("Notes", task.notes);
-        }
-        else if (btn.title === "Edit") {
-            editTaskForm(task);
-        }
-    };
+    if (!btn) return;
+
+    if (btn.classList.contains("delete-btn")) {
+      state.currentProject.deleteTask(taskId);
+      taskLoader(state.currentProject.tasks);
+    } else if (btn.title === "Description") {
+      showCard("Description", task.descript);
+    } else if (btn.title === "Notes") {
+      showCard("Notes", task.notes);
+    } else if (btn.title === "Edit") {
+      editTaskForm(task);
+    }
+  };
 };
 
 function editTaskForm(task) {
+  const existing = document.getElementById("edit-modal");
+  if (existing) existing.remove();
 
+  const modal = document.createElement("div");
+  modal.id = "edit-modal";
 
-    const existing = document.getElementById("edit-modal");
-    if (existing) existing.remove();
-
-    const modal = document.createElement("div");
-    modal.id = "edit-modal";
-
-    modal.innerHTML = `
+  modal.innerHTML = `
         <form id="edit-form" class="card-content edit-form">
             <h3>Edit Task</h3>
             <input type="text" maxlength="20" id="edit-title" value="${task.title}" required>
@@ -143,47 +134,47 @@ function editTaskForm(task) {
         </form>
     `;
 
-    document.getElementById("content").appendChild(modal);
+  document.getElementById("content").appendChild(modal);
 
+  document.getElementById("cancel-edit-btn").onclick = () => modal.remove();
 
-    document.getElementById("cancel-edit-btn").onclick = () => modal.remove();
-
-    document.getElementById("edit-form").onsubmit = (e) => {
-        e.preventDefault();
-        const newDetails = {
-            title: document.getElementById("edit-title").value,
-            descript: document.getElementById("edit-desc").value,
-            date: document.getElementById("edit-date").value,
-            priority: document.getElementById("edit-priority").value,
-            notes: document.getElementById("edit-notes").value
-        };
-        const hasChanged = Object.keys(newDetails).some(key => newDetails[key] !== String(task[key]));
-
-        if (!hasChanged) {
-            document.getElementById("edit-error").style.display = "block"; 
-            return; 
-        }
-
-        
-        state.currentProject.editTask(task.id, newDetails);
-        saveData();
-        taskLoader(state.currentProject.tasks); 
-        modal.remove(); 
+  document.getElementById("edit-form").onsubmit = (e) => {
+    e.preventDefault();
+    const newDetails = {
+      title: document.getElementById("edit-title").value,
+      descript: document.getElementById("edit-desc").value,
+      date: document.getElementById("edit-date").value,
+      priority: document.getElementById("edit-priority").value,
+      notes: document.getElementById("edit-notes").value,
     };
-};
+    const hasChanged = Object.keys(newDetails).some(
+      (key) => newDetails[key] !== String(task[key]),
+    );
+
+    if (!hasChanged) {
+      document.getElementById("edit-error").style.display = "block";
+      return;
+    }
+
+    state.currentProject.editTask(task.id, newDetails);
+    saveData();
+    taskLoader(state.currentProject.tasks);
+    modal.remove();
+  };
+}
 
 export function sortTasksByDate() {
-    // used ... so the original array stays the way it is and a sorted one is copied without mutating the original array.
-    const sortedTasks = [...state.currentProject.tasks].sort((a, b) => {
-        return a.date.localeCompare(b.date); 
-    });
-    taskLoader(sortedTasks);
+  // used ... so the original array stays the way it is and a sorted one is copied without mutating the original array.
+  const sortedTasks = [...state.currentProject.tasks].sort((a, b) => {
+    return a.date.localeCompare(b.date);
+  });
+  taskLoader(sortedTasks);
 }
 
 export function sortTasksByPriority() {
-    // used ... so the original array stays the way it is and a sorted one is copied without mutating the original array.
-    const sortedTasks = [...state.currentProject.tasks].sort((b, a) => {
-        return a.priority.localeCompare(b.priority); 
-    });
-    taskLoader(sortedTasks);
+  // used ... so the original array stays the way it is and a sorted one is copied without mutating the original array.
+  const sortedTasks = [...state.currentProject.tasks].sort((b, a) => {
+    return a.priority.localeCompare(b.priority);
+  });
+  taskLoader(sortedTasks);
 }

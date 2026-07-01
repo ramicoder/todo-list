@@ -1,47 +1,46 @@
-import Task from "./task.js";
 import sanitizeHTML from "./sanitize.js";
 import { state, createTaskModal } from "./index.js";
 import { taskLoader } from "./task.js";
 import { sortTasksByDate, sortTasksByPriority } from "./task.js";
 export class Project {
-    constructor(title, tasks = []) {
-        this.title = title;
-        this.tasks = tasks;
-        this.id = crypto.randomUUID();
-    }
+  constructor(title, tasks = []) {
+    this.title = title;
+    this.tasks = tasks;
+    this.id = crypto.randomUUID();
+  }
 
-    addTask(task) {
-        this.tasks.push(task);
-    }
+  addTask(task) {
+    this.tasks.push(task);
+  }
 
-    deleteTask(targetId) {
+  deleteTask(targetId) {
+    this.tasks = this.tasks.filter((task) => task.id !== targetId);
+  }
 
-        this.tasks = this.tasks.filter
-            (task => task.id !== targetId);
-    }
+  getTask(targetId) {
+    return this.tasks.find((task) => task.id === targetId);
+  }
 
-    getTask(targetId) {
-        return this.tasks.find(task => task.id === targetId);
-    }
+  editTask(targetId, newDetails) {
+    const task = this.getTask(targetId);
+    if (task) Object.assign(task, newDetails);
+  }
 
-    editTask(targetId, newDetails) {
-        const task = this.getTask(targetId);
-        if (task) Object.assign(task, newDetails);
-    }
-
-    toggleTask(targetId) {
-        const task = this.getTask(targetId);
-        if (task) task.checked = !task.checked;
-    }
+  toggleTask(targetId) {
+    const task = this.getTask(targetId);
+    if (task) task.checked = !task.checked;
+  }
 }
 
 export const projectLoader = (projects) => {
-    const projectGrp = document.getElementById("projects");
-    projectGrp.innerHTML = `<p style="text-align: left; font-weight: bold; margin: 10px 10px 20px 13px; font-size: 22px;">Pick a Project</p>
+  const projectGrp = document.getElementById("projects");
+  projectGrp.innerHTML = `<p style="text-align: left; font-weight: bold; margin: 10px 10px 20px 13px; font-size: 22px;">Pick a Project</p>
     <ul id="project-list"></ul>`;
-    const list = document.getElementById("project-list");
-    list.innerHTML = "";
-    const htmlString = projects.map(project => `
+  const list = document.getElementById("project-list");
+  list.innerHTML = "";
+  const htmlString = projects
+    .map(
+      (project) => `
         <li data-id="${project.id}" class="project-item">
             <p class="project-title">
                 ${sanitizeHTML(project.title)}
@@ -51,23 +50,23 @@ export const projectLoader = (projects) => {
                 <svg class="rm-project" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete</title><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg>
             </span>
         </li>
-    `).join("");
-    
-    list.innerHTML = htmlString;
-    list.querySelectorAll(".project-item").forEach(item => {
-        item.addEventListener("click", () => {
-            const id = item.dataset.id;
-            state.currentProject = projects.find(p => p.id === id);
-            renderProjectView();
-            taskLoader(state.currentProject.tasks);
-        });
+    `,
+    )
+    .join("");
+
+  list.innerHTML = htmlString;
+  list.querySelectorAll(".project-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      const id = item.dataset.id;
+      state.currentProject = projects.find((p) => p.id === id);
+      renderProjectView();
+      taskLoader(state.currentProject.tasks);
     });
-}
+  });
+};
 export const renderProjectView = () => {
-    
-    
-    const content = document.getElementById("content");
-    content.innerHTML = `
+  const content = document.getElementById("content");
+  content.innerHTML = `
         <div class="task-list-header">
         <div class="task-columns">
         <span>Title</span>
@@ -82,15 +81,14 @@ export const renderProjectView = () => {
         </div>
         <div id="tasks-container"></div> 
     `;
-    document.getElementById("add-task-btn").addEventListener("click", () => {
-        createTaskModal(); 
-    });
-    document.getElementById("sort-date-btn").addEventListener("click", () => {
-        sortTasksByDate(); 
-    });
+  document.getElementById("add-task-btn").addEventListener("click", () => {
+    createTaskModal();
+  });
+  document.getElementById("sort-date-btn").addEventListener("click", () => {
+    sortTasksByDate();
+  });
 
-    document.getElementById("sort-priority-btn").addEventListener("click", () => {
-        sortTasksByPriority(); 
-    });
+  document.getElementById("sort-priority-btn").addEventListener("click", () => {
+    sortTasksByPriority();
+  });
 };
-
