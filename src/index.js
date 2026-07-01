@@ -27,7 +27,7 @@ function createWorkspace(title, projects = []) {
     } else {
         const newWorkspace = new Workspace(title, projects);
         workspaces.push(newWorkspace);
-        saveData(workspaces);
+        saveData();
         return newWorkspace;
     }
 }
@@ -35,13 +35,13 @@ function createWorkspace(title, projects = []) {
 function editWorkspace(id, title) {
     const workspace = workspaces.find(ws => ws.id === id);
     workspace.title = title;
-    saveData(workspaces);
+    saveData();
 }
 
 function deleteWorkspace(targetId) {
 
     workspaces = workspaces.filter(workspace => workspace.id !== targetId);
-    saveData(workspaces);
+    saveData();
 }
 
 function createWorkSpaceModal() {
@@ -150,7 +150,7 @@ function updateTitle() {
 function createProject(title, tasks = []) {
     const newProject = new Project(title, tasks);
     activeWs.projects.push(newProject);
-    saveData(workspaces);
+    saveData();
     return newProject;
 }
 
@@ -173,7 +173,7 @@ function createProjectModal() {
         const newProject = new Project(titleInput.value);
         
         activeWs.addProject(newProject);
-        saveData(workspaces);
+        saveData();
         projectLoader(activeWs.projects);
         attachIconListeners();
         modal.remove();
@@ -181,6 +181,7 @@ function createProjectModal() {
 }
 
 export function createTaskModal() {
+
     const modal = document.createElement("div");
     modal.id = "task-modal";
     modal.classList.add("modal");
@@ -207,7 +208,7 @@ export function createTaskModal() {
 
         const newTask = new Task(titleInput.value, descriptInput.value, dateInput.value, priorityInput.value, notesInput.value);
         state.currentProject.addTask(newTask);
-        saveData(workspaces);
+        saveData();
         taskLoader(state.currentProject.tasks);
         modal.remove();
     });
@@ -218,7 +219,7 @@ function attachIconListeners() {
             const projectId = e.target.closest('li').dataset.id;
         
             activeWs.deleteProject(projectId);
-            saveData(workspaces);
+            saveData();
 
             projectLoader(activeWs.projects);
             attachIconListeners(); 
@@ -243,7 +244,7 @@ function attachIconListeners() {
                 if (e.key === "Enter" && input.value.trim() !== "") {
                     titleElement.textContent = input.value;
                     activeWs.editProject(projectId, input.value.trim()); 
-                    saveData(workspaces);
+                    saveData();
                     projectLoader(activeWs.projects);
                     
                     attachIconListeners(); 

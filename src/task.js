@@ -118,6 +118,7 @@ export const taskLoader = (tasks) => {
 
 function editTaskForm(task) {
 
+
     const existing = document.getElementById("edit-modal");
     if (existing) existing.remove();
 
@@ -165,7 +166,7 @@ function editTaskForm(task) {
 
         
         state.currentProject.editTask(task.id, newDetails);
-        saveData(state);
+        saveData();
         taskLoader(state.currentProject.tasks); 
         modal.remove(); 
     };

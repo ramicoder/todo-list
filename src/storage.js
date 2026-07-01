@@ -3,7 +3,7 @@ import { Project } from "./project.js";
 import Task from "./task.js";
 import { workspaces } from "./index.js";
 
-export function saveData(workspaces) {
+export function saveData() {
 
     const textData = JSON.stringify(workspaces);
     localStorage.setItem("todoApp", textData);
